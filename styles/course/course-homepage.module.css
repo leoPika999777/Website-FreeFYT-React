@@ -1,7 +1,7 @@
 /* 所有課程 */
 .card-box {
   display: flex;
-  /* flex-wrap: wrap; */
+  flex-wrap: wrap;
   /* margin-top: 36px; */
   justify-content: center;
 
