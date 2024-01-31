@@ -184,7 +184,6 @@ export default function BlogList() {
             </motion.div>
             <motion.div
               className={styles['blog-word1']}
-              Ｆ
               initial={{
                 opacity: 0,
                 x: 90,

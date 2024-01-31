@@ -1,12 +1,9 @@
-import { useState, useEffect, useContext } from 'react'
-import styles from '@/styles/blog/blog.module.css'
+import { useState, useEffect, useContext, useRef } from 'react'
+import styles from '@/styles/blog/index/blogindex.module.css'
 import { useRouter } from 'next/router'
 // import ThemeContext from "@/contexts/ThemeContext";
 import Link from 'next/link'
 import { BLOG_LIST, BLOG_ONE, BLOG_CLASS } from '@/configs'
-import dayjs from 'dayjs'
-import { IoIosAddCircle } from 'react-icons/io'
-import { FaRegHeart } from 'react-icons/fa'
 import AuthContext from '@/context/auth-context'
 //輪播牆
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -15,8 +12,10 @@ import 'swiper/css'
 import 'swiper/css/bundle'
 import 'swiper/css/pagination'
 
-//收藏
-import BlogFavIcon from '@/components/blog/blog-fav-icon'
+import BlogCards from '@/components/blog/cards/blogcard'
+
+//首圖
+import FirstPhoto from '@/components/blog/index/indexfirstphoto'
 
 //動畫
 import { motion } from 'framer-motion'
@@ -38,6 +37,10 @@ export default function BlogList() {
       console.log(ex)
     }
   }
+
+  //loading
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(() => {
     getTagsData()
   }, []) // 在組件載入時執行
@@ -46,14 +49,6 @@ export default function BlogList() {
   // const [keyword, setKeyword] = useState('')
 
   const router = useRouter()
-  // const { theme, setTheme } = useContext(ThemeContext)
-
-  // const [search, setSearch] = useState({
-  //   page: +router.query.page || 1,
-  //   category: +router.query.category || '',
-  //   keyword: router.query.keyword || '',
-  //   sortBy: router.query.sortBy || '',
-  // })
 
   const getListData = async () => {
     const usp = new URLSearchParams(router.query)
@@ -82,6 +77,9 @@ export default function BlogList() {
       const d = await r.json()
       console.log(d)
       setData(d)
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 2000)
     } catch (ex) {
       console.log(ex)
     }
@@ -89,7 +87,12 @@ export default function BlogList() {
 
   useEffect(() => {
     getListData()
-  }, [router.query.page, router.query.keyword, router.query.tag])
+  }, [
+    router.query.page,
+    router.query.keyword,
+    router.query.tag,
+    router.query.sortBy,
+  ])
 
   //part2-1
   const removeItemAndReload = async (blogarticle_id) => {
@@ -106,260 +109,183 @@ export default function BlogList() {
     }
   }
 
-  //新版首圖icon
-  const [isHovered, setIsHovered] = useState(false)
+    //新版首圖icon
+    const [isHovered, setIsHovered] = useState(false)
 
-  const handleMouseEnter = () => {
-    setIsHovered(true)
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-  }
-
-  //舊版首圖icon
-  // const [isHelloHovered, setIsHelloHovered] = useState(false)
-  // const [liHovered, setLiHovered] = useState(null)
-
-  // const handleHelloMouseEnter = () => {
-  //   setIsHelloHovered(true)
-  // }
-
-  // const handleHelloMouseLeave = () => {
-  //   setIsHelloHovered(false)
-  //   setLiHovered(null)
-  // }
-
-  // const handleLiMouseEnter = (index) => {
-  //   setLiHovered(index)
-  // }
-
-  // const handleLiMouseLeave = () => {
-  //   setLiHovered(null)
-  // }
-
-  //使用動畫 做出create your time
-  const [isCreateAnimated, setIsCreateAnimated] = useState(false);
-  const [isYourAnimated, setIsYourAnimated] = useState(false);
-
-  useEffect(() => {
-    const createTimeout = setTimeout(() => {
-      setIsCreateAnimated(true);
-    }, 10000); // CREATE 動畫延遲 10 秒
-
-    return () => clearTimeout(createTimeout);
-  }, []);
-
-  useEffect(() => {
-    if (isCreateAnimated) {
-      const yourTimeout = setTimeout(() => {
-        setIsYourAnimated(true);
-      }, 1000); // YOUR 動畫延遲 1 秒
-
-      return () => clearTimeout(yourTimeout);
+    const handleMouseEnter = () => {
+      setIsHovered(true)
     }
-  }, [isCreateAnimated]);
+  
+    const handleMouseLeave = () => {
+      setIsHovered(false)
+    }
+
+ 
+
+  const cardSectionRef = useRef(null)
 
   return (
     <>
-      {/* 首頁圖 */}
-
-      {/* 首頁圖 */}
-      <div className={styles['blog-first']}>
-        <div className={styles['blog-headimg']}>
-          <img
-            src="/image/blog-02.png"
-            // alt="{v.name} "
-          />
-          {/* <Image src="/image/blog-01.png" width={'300'} height={'800'} style={{width:'100%',height:'80vh'}} alt="" /> */}
+      {isLoading ? (
+        <div className="container">
+          <div className={styles['loading-box']}>
+            <img src="/store/freefyt-loading.svg" />
+          </div>
         </div>
-        {isCreateAnimated && (
-          <motion.div
-            className={styles["blog-word0"]}
-            initial={{
-              opacity: 0,
-              x: 90,
-            }}
-            whileInView={{
-              opacity: 1,
-              x: 0,
-              transition: {
-                duration: 1,
-              },
-            }}
-            viewport={{ once: true }}
-          >
-            <p>CREATE</p>
-          </motion.div>
-        )}
-        {isYourAnimated && (
-          <motion.div
-            className={styles["blog-word1"]}
-            initial={{
-              opacity: 0,
-              x: 90,
-            }}
-            whileInView={{
-              opacity: 1,
-              x: 0,
-              transition: {
-                duration: 1,
-              },
-            }}
-            viewport={{ once: true }}
-          >
-            <p>YOUR</p>
-          </motion.div>
-        )}
-       
-        <div
-          className={styles.box}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+      ) : (
+        <>
+          {/* 首頁圖 */}
+          <FirstPhoto />
+          
+          {/* ICON */}
           <div
-            className={`${styles.hellos} ${
-              isHovered ? styles.helloHovered : ''
-            }`}
-          >
-            <img src="/image/blog-indexbtn.png" />
-          </div>
-          {isHovered && (
-            <ul className={styles.options}>
-              <li className={styles.option}>查看文章</li>
-              <li className={styles.option}>我的首頁</li>
-              <li className={styles.option}>建立文章</li>
-            </ul>
-          )}
-        </div>
-        {/* 舊版 */}
-        {/* <div
-          className={`${styles.hello} ${
-            isHelloHovered ? styles.helloHovered : ''
-          }`}
-          onMouseEnter={handleHelloMouseEnter}
-          onMouseLeave={handleHelloMouseLeave}
-        >
-          <div className={styles['blog-hello']}>
-            {' '}
-            <img src="/image/blog-indexbtn.png" />
-          </div>
+              className={styles.box}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div
+                className={`${styles.hellos} ${
+                  isHovered ? styles.helloHovered : ''
+                }`}
+              >
+                <img src="/image/blog-indexbtn.png" />
+              </div>
+              {isHovered && (
+                <ul className={styles.options}>
+                  <button
+                    className={styles.option}
+                    onClick={() => {
+                      // 點擊查看文章時滑動到卡片區
+                      cardSectionRef.current.scrollIntoView({
+                        behavior: 'smooth',
+                      })
+                    }}
+                  >
+                    查看文章
+                  </button>
+                  <Link href={`/blog/mylist/${memberId}`}>
+                    <li className={styles.option}>我的首頁</li>
+                  </Link>
+                  <Link href={`/blog/mylist/add`}>
+                    <li className={styles.option}>建立文章</li>
+                  </Link>
+                </ul>
+              )}
+            </div>
+            
 
-          {isHelloHovered && (
-            <ul className={styles.menu}>
-              <li
-                className={`${styles.menuItem} ${
-                  liHovered === 0 ? styles.itemHovered : ''
-                }`}
-                onMouseEnter={() => handleLiMouseEnter(0)}
-                onMouseLeave={handleLiMouseLeave}
-              >
-                查看文章
-              </li>
-              <li
-                className={`${styles.menuItem} ${
-                  liHovered === 1 ? styles.itemHovered : ''
-                }`}
-                onMouseEnter={() => handleLiMouseEnter(1)}
-                onMouseLeave={handleLiMouseLeave}
-              >
-                我的首頁
-              </li>
-              <li
-                className={`${styles.menuItem} ${
-                  liHovered === 2 ? styles.itemHovered : ''
-                }`}
-                onMouseEnter={() => handleLiMouseEnter(2)}
-                onMouseLeave={handleLiMouseLeave}
-              >
-                創建文章
-              </li>
-            </ul>
-          )}
-        </div> */}
-      </div>
-
-      {/* 搜尋匡 */}
-      <div className="container">
-        <section>
-          <div className={styles['bg-class']}>
-            <ul className={styles['bg-class-ul']}>
-              <li>
-                <a href="#">熱門文章</a>
-              </li>
-              <li>
-                <a href="#">最新文章</a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    router.push(
-                      {
-                        pathname: '/blog',
-                        query: { ...router.query, tag },
-                      },
-                      undefined,
-                      { scroll: false }
-                    )
-                  }}
-                >
-                  所有文章
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className={styles['bg-searchbox']}>
-            <div className={styles['bg-search']}>
-              <span className={styles['bg-icon']}>
-                <i
-                  className={styles['fa fa-search']}
-                  style={{ color: '#000' }}
-                />
-              </span>
-              <form
-                role="search"
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  router.push({
-                    pathname: '/blog-list',
-                    query: {
-                      ...router.query,
-                      keyword: e.currentTarget.keyword.value,
-                    },
-                  })
-                }}
-              >
-                <div className={styles['search-product']}>
-                  <div className="input-group">
-                    <input
-                      type="search"
-                      className={styles['bg-search']}
-                      id="bg-search"
-                      placeholder="請輸入搜尋關鍵字"
-                      name="keyword"
-                      onChange={(e) => {
+          {/* 搜尋匡 */}
+          <div className="container">
+            <section>
+              <div className={styles['category-card']}>
+                <div className={styles['category-title']}>
+                  <span className={styles['select-text']}>SELECT</span>
+                  <span className={styles['category-text']}>CATEGORY</span>
+                </div>
+              </div>
+              <div className={styles['bg-class']}>
+                <ul className={styles['bg-class-ul']}>
+                  <li>
+                    <button
+                      onClick={(e) => {
                         // setKeyword(e.currentTarget.value)
 
                         router.push(
                           {
                             pathname: '/blog',
-                            query: { ...router.query, keyword: e.target.value },
+                            query: {
+                              ...router.query,
+                              sortBy: 'readFromHighToLow',
+                            },
                           },
                           undefined,
                           { scroll: false }
                         )
                       }}
+                    >
+                      <div className={styles['bg-boxin01']}>POPULAR</div>
+                      <div className={styles['bg-boxin02']}>熱門文章</div>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={(e) => {
+                        // setKeyword(e.currentTarget.value)
+
+                        router.push(
+                          {
+                            pathname: '/blog',
+                            query: {
+                              ...router.query,
+                              sortBy: 'createFromHighToLow',
+                            },
+                          },
+                          undefined,
+                          { scroll: false }
+                        )
+                      }}
+                    >
+                      {' '}
+                      <div className={styles['bg-boxin01']}>NEWEST</div>
+                      <div className={styles['bg-boxin02']}>最新文章</div>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+              <div className={styles['bg-searchbox']}>
+                <div className={styles['bg-search']}>
+                  <span className={styles['bg-icon']}>
+                    <i
+                      className={styles['fa fa-search']}
+                      style={{ color: '#000' }}
                     />
-                  </div>
-                  {/* <button className={styles['btn-search-product']}>搜尋</button> */}
+                  </span>
+                  <form
+                    role="search"
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                      router.push({
+                        pathname: '/blog-list',
+                        query: {
+                          ...router.query,
+                          keyword: e.currentTarget.keyword.value,
+                        },
+                      })
+                    }}
+                  >
+                    <div className={styles['search-product']}>
+                      <div className="input-group">
+                        <input
+                          type="search"
+                          className={styles['bg-search']}
+                          id="bg-search"
+                          placeholder="請輸入搜尋關鍵字"
+                          name="keyword"
+                          onChange={(e) => {
+                            // setKeyword(e.currentTarget.value)
+
+                            router.push(
+                              {
+                                pathname: '/blog',
+                                query: {
+                                  ...router.query,
+                                  keyword: e.target.value,
+                                },
+                              },
+                              undefined,
+                              { scroll: false }
+                            )
+                          }}
+                        />
+                      </div>
+                      {/* <button className={styles['btn-search-product']}>搜尋</button> */}
+                    </div>
+                  </form>
                 </div>
-              </form>
-            </div>
-            <div className={styles['bg-tag']}>
-              <ul className={styles['bg-tagul']}>
-                <li>
-                  {/* <button
+                <div className={styles['bg-tag']}>
+                  <ul className={styles['bg-tagul']}>
+                    <li>
+                      {/* <button
                     className={styles['bg-taga']}
                     onClick={(e) => {
                       router.push(
@@ -374,222 +300,111 @@ export default function BlogList() {
                   >
                     所有文章
                   </button> */}
-                </li>
-                <Swiper
-                  modules={[Pagination, A11y, Autoplay, Navigation]}
-                  spaceBetween={5}
-                  slidesPerView={5}
-                  navigation
-                  autoplay={{
-                    delay: 5000,
-                    disableOnInteraction: false,
-                  }}
-                  pagination={{ clickable: true }}
-                  // onSlideChange={() => console.log('slide change')}
-                  // onSwiper={(swiper) => console.log(swiper)}
-                  style={{ color: 'red' }}
-                >
-                  {tags.map((tag) => {
-                    return (
-                      <SwiperSlide key={tag}>
-                        <button
-                          className={styles['bg-taga']}
-                          onClick={(e) => {
-                            router.push(
-                              {
-                                pathname: '/blog',
-                                query: { ...router.query, tag },
-                              },
-                              undefined,
-                              { scroll: false }
-                            )
-                          }}
-                        >
-                          {tag}
-                        </button>
-                      </SwiperSlide>
-                    )
-                  })}{' '}
-                </Swiper>
-                {/* <li>
-                  <button
-                    className={styles['bg-taga']}
-                    onClick={(e) => {
-               
-
-                      router.push(
-                        {
-                          pathname: '/blog',
-                          query: { ...router.query, tag: '飲食美學' },
-                        },
-                        undefined,
-                        { scroll: false }
-                      )
-                    }}
-                  >
-                    飲食美學
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={styles['bg-taga']}
-                    onClick={(e) => {
-                     
-
-                      router.push(
-                        {
-                          pathname: '/blog',
-                          query: { ...router.query, tag: '飲食美學' },
-                        },
-                        undefined,
-                        { scroll: false }
-                      )
-                    }}
-                  >
-                    飲食美學
-                  </button>
-                </li>
-                <li>
-                  <button className={styles['bg-taga']}
-                  onClick={(e) => {
-                    
-
-                      router.push(
-                        {
-                          pathname: '/blog',
-                          query: { ...router.query, tag: '拓點展示' },
-                        },
-                        undefined,
-                        { scroll: false }
-                      )
-                    }}>拓點展示</button>
-                </li>
-                <li>
-                  <button className={styles['bg-taga']}>健身攻略</button>
-                </li>
-                <li>
-                  <button className={styles['bg-taga']}>健康之旅 </button>
-                </li> */}
-              </ul>
-            </div>
-          </div>
-        </section>
-        {/* 卡片區 */}
-        <section>
-          <div className={styles['blog-group']}>
-            {data.rows &&
-              data.rows.map((i) => {
-                return (
-                  <div className={styles['blog-item']} key={i.blogarticle_id}>
-                    <div className={styles['blog-img']}>
-                      <img
-                        src={`http://localhost:3002/blog/img/${i.blogarticle_photo}`}
-                        alt="{v.name} "
-                      />
-                    </div>
-                    <div className={styles['blog-aflex']}>
-                      <div className={styles['blog-stock']}>
-                        {i.member_nickname}
-                      </div>
-                      <div className={styles['blog-stock']}>
-                        {dayjs(i.blogarticle_create).format('YYYY-MM-DD HH:mm')}
-                      </div>
-                    </div>
-                    <div className={styles['blog-name']}>
-                      {i.blogarticle_title}
-                    </div>
-                    {/* <div className={styles['blog-price']}>收藏</div> */}
-                    <div className={styles['blog-info']}>
-                      <div className={styles['blog-purchase-qty']}>
-                        {i.blogarticle_content}
-                      </div>
-                      <div className={styles['blog-fav']}>
-                        <BlogFavIcon blogarticle_id={i.blogarticle_id} />
-                      </div>
-                    </div>
-
-                    <div className={styles['cart-btn']}>
-                      {/* <button
-                        className={styles['add-to-cart-btn']}
-                        // onClick={() => addItem(i)}
-                        onClick={() => {}}
-                      >
-                        加入收藏
-                      </button> */}
-                      <Link href={`/blog/${i.blogarticle_id}`}>
-                        <button className={styles['add-to-cart-btn1']}>
-                          點選查看
-                        </button>
-                      </Link>
-                    </div>
-                  </div>
-                )
-              })}
-          </div>
-          {/* page 頁區*/}
-          <div className={styles['col']}>
-            <nav aria-label="Page navigation example">
-              <ul className={styles['pagination']}>
-                {data.success && data.totalPages
-                  ? Array(11)
-                      .fill(1)
-                      .map((v, i) => {
-                        const p = data.page - 6 + i
-                        //先判斷 p的值有沒有在頁碼範圍
-                        if (p < 1 || p > data.totalPages) return null
+                    </li>
+                    <Swiper
+                      modules={[Pagination, A11y, Autoplay, Navigation]}
+                      spaceBetween={5}
+                      slidesPerView={5}
+                      navigation
+                      autoplay={{
+                        delay: 5000,
+                        disableOnInteraction: false,
+                      }}
+                      pagination={{ clickable: true }}
+                      style={{ color: 'red' }}
+                    >
+                      {['所有文章', ...tags].map((tag) => {
                         return (
-                          <li
-                            key={p}
-                            className={
-                              p === data.page
-                                ? styles['page-item']
-                                : styles['page-item']
-                            }
-                          >
-                            <Link
-                              className={styles['page-link']}
-                              href={'?page=' + p}
+                          <SwiperSlide key={tag}>
+                            <button
+                              className={styles['bg-taga']}
+                              onClick={(e) => {
+                                if (tag === '所有文章') {
+                                  router.push(
+                                    {
+                                      pathname: '/blog',
+                                      query: {
+                                        ...router.query,
+                                        tag: undefined,
+                                      },
+                                    },
+                                    undefined,
+                                    { scroll: false }
+                                  )
+                                } else {
+                                  router.push(
+                                    {
+                                      pathname: '/blog',
+                                      query: { ...router.query, tag },
+                                    },
+                                    undefined,
+                                    { scroll: false }
+                                  )
+                                }
+                              }}
                             >
-                              {p}
-                            </Link>
-                          </li>
+                              {tag}
+                            </button>
+                          </SwiperSlide>
                         )
+                      })}
+                    </Swiper>
+                  </ul>
+                </div>
+              </div>
+            </section>
+            {/* 卡片區 */}
+            <section>
+              <div className={styles['blog-height']} ref={cardSectionRef}>
+                論壇文章
+              </div>
+              {/* 卡片區 */}
+              <BlogCards></BlogCards>
+              {/* page 頁區*/}
+              <div className={styles['col']}>
+                <nav aria-label="Page navigation example">
+                  <ul className={styles['pagination']}>
+                    {data.success && data.totalPages
+                      ? Array(11)
+                          .fill(1)
+                          .map((v, i) => {
+                            const p = data.page - 6 + i
+                            //先判斷 p的值有沒有在頁碼範圍
+                            if (p < 1 || p > data.totalPages) return null
+                            return (
+                              <li
+                                key={p}
+                                className={
+                                  p === data.page
+                                    ? styles['page-item']
+                                    : styles['page-item']
+                                }
+                              >
+                                <Link
+                                  className={styles['page-link']}
+                                  href={'?page=' + p}
+                                >
+                                  {p}
+                                </Link>
+                              </li>
+                            )
 
-                        //p的值要在頁碼範圍
+                            
+                          })
+                      : null}
 
-                        /* 方法一
-                        if (p >= 1 && p <= data.totalPages) {
-                          return (
-                            <li key={i} className="page-item">
-                              <Link className="page-link" href="?">
-                                {i + 1}
-                              </Link>
-                            </li>
-                          );
-                        } else {
-                          return null;
-                        } 
-                        */
-                      })
-                  : null}
-
-                {/*}
-          <% for(let i=page-5; i<=page+5; i++) if(i>=1 && i<=totalPages) { %>
-          <li className="page-item <%= i===page ? 'active' : '' %>">
-            <a
-              className="page-link"
-              href="?<%= new URLSearchParams({...qs, page: i}).toString() %>"
-              ><%= i %></a
-            >
-          </li>
-          <% } %>
+                    {/*}
+          
 */}
-              </ul>
-            </nav>
+                  </ul>
+                </nav>
+              </div>
+            </section>
           </div>
-        </section>
-      </div>
+         
+
+        </>
+      )}
     </>
   )
 }
