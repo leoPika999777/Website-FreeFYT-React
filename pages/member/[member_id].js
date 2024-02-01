@@ -234,7 +234,8 @@ export default function MemberHub() {
             會員<span>中心</span>
           </h3> */}
           <div className={styles['heading__contents']}>
-            <div className={styles['heading__profile-img-container']}>
+          <div className={styles['heading__forMB']}>
+          <div className={styles['heading__profile-img-container']}>
               {memberProfile.member_pic ? (
                 <Image
                   loader={() =>
@@ -263,6 +264,8 @@ export default function MemberHub() {
                 />
               )}
             </div>
+          </div>
+           
             <div className={styles['heading__info-box']}>
               <h3>
                 歡迎回來，

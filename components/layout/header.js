@@ -1,4 +1,5 @@
-import React, { use } from 'react'
+import AuthContext from '@/context/auth-context'
+import { useContext, useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FaSearch } from 'react-icons/fa'
@@ -7,7 +8,7 @@ import { FaShoppingCart } from 'react-icons/fa'
 import { useCart } from '@/hooks/use-cart'
 import UserMenu from '@/components/layout/user-menu'
 import { HiMenu } from 'react-icons/hi'
-import { useState } from 'react'
+
 
 export default function Header() {
   const { addItem, totalItems } = useCart()
@@ -15,6 +16,7 @@ export default function Header() {
   const toggleMobileNav = () => {
     setMobileNavVisible(!mobileNavVisible);
   };
+  const { auth} = useContext(AuthContext)
 
 
   return (
@@ -71,19 +73,19 @@ export default function Header() {
         </div>
         <ul className={`mobile-nav ${mobileNavVisible ? 'visible' : ''}`}>
           <li className=">mobile-nav-link">
-            <Link href={'/'}>會員中心</Link>
+          <Link href={`/member/${auth.id}`} >會員中心</Link>
           </li>
           <li className=">mobile-nav-link">
-            <Link href={'/'}>健身追蹤</Link>
+            <Link href="/fytrack">健身追蹤</Link>
           </li>{' '}
           <li className=">mobile-nav-link">
             <Link href={'/course'}>課程專區</Link>
           </li>{' '}
           <li className=">mobile-nav-link">
-            <Link href={'/'}>線上商城</Link>
+            <Link href="/store/product" >線上商城</Link>
           </li>{' '}
           <li className=">mobile-nav-link">
-            <Link href={'/'}>健身論壇</Link>
+            <Link href="/blog" >健身論壇</Link>
           </li>
         </ul>
       </header>
