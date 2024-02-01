@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
-import styles from '@/styles/blog/blogpid.module.css'
+import styles from '@/styles/blog/detail/blogpid.module.css'
 import Link from 'next/link'
 import { GiSelfLove } from 'react-icons/gi'
 import { BLOG_ONE, BLOG_REPLY, BLOGREPLY_ADD } from '@/configs'
@@ -8,8 +8,6 @@ import dayjs from 'dayjs'
 import AuthContext from '@/context/auth-context'
 import FollowFavIcon2 from '@/components/blog/follow-fav-icon2'
 import BlogFavIcon2 from '@/components/blog/blog-fav-icon2'
-import Swal from 'sweetalert2'
-
 
 export default function BlogDetail() {
   const [blog, setBlog] = useState({})
@@ -75,13 +73,6 @@ export default function BlogDetail() {
     const { name, id, value } = e.target
     console.log({ name, id, value })
     setDisplayInfo('')
-
-    //寫法1：把舊的值展開來 變成新的物件 把name換成新的值
-    //setMyForm({...myForm,name: e.target.value}) ;
-    //寫法2:
-    //    setMyForm((old)=>{
-    //     return{...old, name: e.target.value};
-    //    });
 
     setMyForm({ ...myForm, [id]: value })
   }
@@ -238,25 +229,10 @@ export default function BlogDetail() {
                 name="form1"
                 onSubmit={onSubmit}
               >
-                {/* <input type="text" value='' name='' /> */}
+          
                 <p>留下你的評論</p>
                 <div className={styles['bg-writereply-a']}>
-                  {/* <input
-                    type="text"
-                    className={styles['bgid-writecontent']}
-                    id="memberID"
-                    name="memberID"
-                    value={memberId}
-                    onChange={changeHandler}
-                  />
-                  <input
-                    type="text"
-                    className={styles['bgid-writecontent']}
-                    id="blogarticle_id"
-                    name="blogarticle_id"
-                    value={myForm.blogarticle_id}
-                    onChange={changeHandler}
-                  /> */}
+                 
                   <div className="form-text"></div>
                 </div>
                 <div className={styles['bg-writereply-a']}>
@@ -336,7 +312,7 @@ export default function BlogDetail() {
               </button>
             </div>
           </div>
-          {/* <div className={styles['bgid-suggest']}>123</div> */}
+        
         </section>
       </div>
     </>

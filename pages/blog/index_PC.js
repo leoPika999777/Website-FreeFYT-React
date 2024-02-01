@@ -1,9 +1,12 @@
 import { useState, useEffect, useContext, useRef } from 'react'
-import styles from '@/styles/blog/index/blogindex.module.css'
+import styles from '@/styles/blog/blog.module.css'
 import { useRouter } from 'next/router'
 // import ThemeContext from "@/contexts/ThemeContext";
 import Link from 'next/link'
 import { BLOG_LIST, BLOG_ONE, BLOG_CLASS } from '@/configs'
+import dayjs from 'dayjs'
+import { IoIosAddCircle } from 'react-icons/io'
+import { FaRegHeart } from 'react-icons/fa'
 import AuthContext from '@/context/auth-context'
 //輪播牆
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -13,9 +16,6 @@ import 'swiper/css/bundle'
 import 'swiper/css/pagination'
 
 import BlogCards from '@/components/blog/cards/blogcard'
-
-//首圖
-import FirstPhoto from '@/components/blog/index/indexfirstphoto'
 
 //動畫
 import { motion } from 'framer-motion'
@@ -109,19 +109,39 @@ export default function BlogList() {
     }
   }
 
-    //新版首圖icon
-    const [isHovered, setIsHovered] = useState(false)
+  //新版首圖icon
+  const [isHovered, setIsHovered] = useState(false)
 
-    const handleMouseEnter = () => {
-      setIsHovered(true)
-    }
-  
-    const handleMouseLeave = () => {
-      setIsHovered(false)
-    }
+  const handleMouseEnter = () => {
+    setIsHovered(true)
+  }
 
- 
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+  }
 
+  //舊版首圖icon
+  // const [isHelloHovered, setIsHelloHovered] = useState(false)
+  // const [liHovered, setLiHovered] = useState(null)
+
+  // const handleHelloMouseEnter = () => {
+  //   setIsHelloHovered(true)
+  // }
+
+  // const handleHelloMouseLeave = () => {
+  //   setIsHelloHovered(false)
+  //   setLiHovered(null)
+  // }
+
+  // const handleLiMouseEnter = (index) => {
+  //   setLiHovered(index)
+  // }
+
+  // const handleLiMouseLeave = () => {
+  //   setLiHovered(null)
+  // }
+
+  // 創建一個 ref
   const cardSectionRef = useRef(null)
 
   return (
@@ -135,10 +155,71 @@ export default function BlogList() {
       ) : (
         <>
           {/* 首頁圖 */}
-          <FirstPhoto />
-          
-          {/* ICON */}
-          <div
+
+          {/* 首頁圖 */}
+          <div className={styles['blog-first']}>
+            <div className={styles['blog-headimg']}>
+              <img
+                src="/image/blog-02.png"
+                // alt="{v.name} "
+              />
+              {/* <Image src="/image/blog-01.png" width={'300'} height={'800'} style={{width:'100%',height:'80vh'}} alt="" /> */}
+            </div>
+            <motion.div
+              className={styles['blog-word0']}
+              initial={{
+                opacity: 0,
+                x: 90,
+              }}
+              whileInView={{
+                opacity: 1,
+                x: 0,
+                transition: {
+                  duration: 5, // Increase the duration to 10 seconds
+                },
+              }}
+              viewport={{ once: true }}
+            >
+              <p>CREATE</p>
+            </motion.div>
+            <motion.div
+              className={styles['blog-word1']}
+              initial={{
+                opacity: 0,
+                x: 90,
+              }}
+              whileInView={{
+                opacity: 1,
+                x: 0,
+                transition: {
+                  duration: 5, // Increase the duration to 10 seconds
+                },
+              }}
+              viewport={{ once: true }}
+            >
+              {' '}
+              <p>YOUR</p>
+            </motion.div>
+            <motion.div
+              className={styles['blog-word2']}
+              initial={{
+                opacity: 0,
+                x: 90,
+              }}
+              whileInView={{
+                opacity: 1,
+                x: 0,
+                transition: {
+                  duration: 5, // Increase the duration to 10 seconds
+                },
+              }}
+              viewport={{ once: true }}
+            >
+              {' '}
+              <p>#BLOG</p>
+            </motion.div>
+
+            <div
               className={styles.box}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
@@ -172,7 +253,52 @@ export default function BlogList() {
                 </ul>
               )}
             </div>
-            
+            {/* 舊版 */}
+            {/* <div
+          className={`${styles.hello} ${
+            isHelloHovered ? styles.helloHovered : ''
+          }`}
+          onMouseEnter={handleHelloMouseEnter}
+          onMouseLeave={handleHelloMouseLeave}
+        >
+          <div className={styles['blog-hello']}>
+            {' '}
+            <img src="/image/blog-indexbtn.png" />
+          </div>
+
+          {isHelloHovered && (
+            <ul className={styles.menu}>
+              <li
+                className={`${styles.menuItem} ${
+                  liHovered === 0 ? styles.itemHovered : ''
+                }`}
+                onMouseEnter={() => handleLiMouseEnter(0)}
+                onMouseLeave={handleLiMouseLeave}
+              >
+                查看文章
+              </li>
+              <li
+                className={`${styles.menuItem} ${
+                  liHovered === 1 ? styles.itemHovered : ''
+                }`}
+                onMouseEnter={() => handleLiMouseEnter(1)}
+                onMouseLeave={handleLiMouseLeave}
+              >
+                我的首頁
+              </li>
+              <li
+                className={`${styles.menuItem} ${
+                  liHovered === 2 ? styles.itemHovered : ''
+                }`}
+                onMouseEnter={() => handleLiMouseEnter(2)}
+                onMouseLeave={handleLiMouseLeave}
+              >
+                創建文章
+              </li>
+            </ul>
+          )}
+        </div> */}
+          </div>
 
           {/* 搜尋匡 */}
           <div className="container">
@@ -349,6 +475,67 @@ export default function BlogList() {
                         )
                       })}
                     </Swiper>
+
+                    {/* <li>
+                  <button
+                    className={styles['bg-taga']}
+                    onClick={(e) => {
+               
+
+                      router.push(
+                        {
+                          pathname: '/blog',
+                          query: { ...router.query, tag: '飲食美學' },
+                        },
+                        undefined,
+                        { scroll: false }
+                      )
+                    }}
+                  >
+                    飲食美學
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    className={styles['bg-taga']}
+                    onClick={(e) => {
+                     
+
+                      router.push(
+                        {
+                          pathname: '/blog',
+                          query: { ...router.query, tag: '飲食美學' },
+                        },
+                        undefined,
+                        { scroll: false }
+                      )
+                    }}
+                  >
+                    飲食美學
+                  </button>
+                </li>
+                <li>
+                  <button className={styles['bg-taga']}
+                  onClick={(e) => {
+                    
+
+                      router.push(
+                        {
+                          pathname: '/blog',
+                          query: { ...router.query, tag: '拓點展示' },
+                        },
+                        undefined,
+                        { scroll: false }
+                      )
+                    }}>拓點展示</button>
+                </li>
+                <li>
+                  <button className={styles['bg-taga']}>健身攻略</button>
+                </li>
+                <li>
+                  <button className={styles['bg-taga']}>健康之旅 </button>
+                </li> */}
                   </ul>
                 </div>
               </div>
@@ -389,20 +576,40 @@ export default function BlogList() {
                               </li>
                             )
 
-                            
+                            //p的值要在頁碼範圍
+
+                            /* 方法一
+                        if (p >= 1 && p <= data.totalPages) {
+                          return (
+                            <li key={i} className="page-item">
+                              <Link className="page-link" href="?">
+                                {i + 1}
+                              </Link>
+                            </li>
+                          );
+                        } else {
+                          return null;
+                        } 
+                        */
                           })
                       : null}
 
                     {/*}
-          
+          <% for(let i=page-5; i<=page+5; i++) if(i>=1 && i<=totalPages) { %>
+          <li className="page-item <%= i===page ? 'active' : '' %>">
+            <a
+              className="page-link"
+              href="?<%= new URLSearchParams({...qs, page: i}).toString() %>"
+              ><%= i %></a
+            >
+          </li>
+          <% } %>
 */}
                   </ul>
                 </nav>
               </div>
             </section>
           </div>
-         
-
         </>
       )}
     </>

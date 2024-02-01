@@ -1,16 +1,14 @@
 import { useState, useEffect, useContext, useRef } from 'react'
-import styles from '@/styles/blog/blog.module.css'
+import styles from '@/styles/blog/index/blogcard.module.css'
 import { useRouter } from 'next/router'
 // import ThemeContext from "@/contexts/ThemeContext";
 import Link from 'next/link'
 import { BLOG_LIST, BLOG_ONE, BLOG_CLASS } from '@/configs'
 import dayjs from 'dayjs'
-import { IoIosAddCircle } from 'react-icons/io'
-import { FaRegHeart } from 'react-icons/fa'
+
 import AuthContext from '@/context/auth-context'
 //輪播牆
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Pagination, A11y, Autoplay, Navigation } from 'swiper/modules'
+
 import 'swiper/css'
 import 'swiper/css/bundle'
 import 'swiper/css/pagination'
@@ -154,13 +152,7 @@ export default function BlogCards() {
                         </div>
 
                         <div className={styles['cart-btn']}>
-                          {/* <button
-                        className={styles['add-to-cart-btn']}
-                        // onClick={() => addItem(i)}
-                        onClick={() => {}}
-                      >
-                        加入收藏
-                      </button> */}
+                          
                           <Link href={`/blog/${i.blogarticle_id}`}>
                             <button className={styles['add-to-cart-btn1']}>
                               點選查看
